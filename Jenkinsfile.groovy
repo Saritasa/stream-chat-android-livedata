@@ -14,9 +14,11 @@ node('android') {
         }
 
         stage('build and publish') {
-            sh("chmod +x gradlew")
-            sh("./gradlew clean assemble --stacktrace")
-            sh("./gradlew :livedata:uploadArchives --stacktrace")
+            withEnv(["PATH=$PATH:${GRADLE_HOME}/bin", "JAVA_HOME=${JAVA_HOME}"]) {
+                sh("chmod +x gradlew")
+                sh("./gradlew clean assemble --stacktrace")
+                sh("./gradlew :livedata:uploadArchives --stacktrace")
+            }
         }
     } catch (error) {
         currentBuild.result = 'FAILURE'
