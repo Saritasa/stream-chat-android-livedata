@@ -14,7 +14,7 @@ node{
 
     stage('build and publish'){
         sh("chmod +x gradlew")
-        sh("./gradlew assemble")
+        sh("./gradlew assemble --stacktrace")
         sh("./gradlew :livedata:uploadArchives --stacktrace")
     }
 }
