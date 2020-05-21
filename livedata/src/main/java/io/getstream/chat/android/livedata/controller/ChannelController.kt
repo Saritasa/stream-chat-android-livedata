@@ -67,4 +67,6 @@ interface ChannelController {
 
     val hidden: LiveData<Boolean>
     val muted: LiveData<Boolean>
+
+    fun clearMessages()
 }

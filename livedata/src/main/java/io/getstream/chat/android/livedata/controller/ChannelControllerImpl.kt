@@ -56,6 +56,10 @@ class ChannelControllerImpl(
     private val _channelData = MutableLiveData<ChannelData>()
     internal var hideMessagesBefore: Date? = null
 
+    override fun clearMessages() {
+        _messages.postValue(mutableMapOf())
+    }
+
     /** a list of messages sorted by message.createdAt */
     override val messages: LiveData<List<Message>> = Transformations.map(_messages) {
         // TODO: consider removing this check
