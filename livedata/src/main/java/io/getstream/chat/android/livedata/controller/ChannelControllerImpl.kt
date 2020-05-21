@@ -348,10 +348,10 @@ class ChannelControllerImpl(
             logger.logI("Another request to load newer messages is in progress. Ignoring this request.")
             return Result(null, ChatError("Another request to load newer messages is in progress. Ignoring this request."))
         }
-        _loadingNewerMessages.value = true
+        _loadingNewerMessages.postValue(true)
         val pagination = loadMoreMessagesRequest(limit, Pagination.GREATER_THAN)
         val result = runChannelQuery(pagination)
-        _loadingNewerMessages.value = false
+        _loadingNewerMessages.postValue(false)
         return result
     }
 
