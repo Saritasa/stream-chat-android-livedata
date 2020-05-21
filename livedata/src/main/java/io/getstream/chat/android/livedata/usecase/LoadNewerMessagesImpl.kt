@@ -15,15 +15,15 @@ interface LoadNewerMessages {
      *
      * @return A call object with Channel as the return type
      */
-    operator fun invoke(cid: String, messageLimit: Int): Call2<Channel>
+    operator fun invoke(cid: String, messageLimit: Int, startMessageId: String? = null): Call2<Channel>
 }
 
 class LoadNewerMessagesImpl(var domainImpl: ChatDomainImpl) : LoadNewerMessages {
-    override operator fun invoke(cid: String, messageLimit: Int): Call2<Channel> {
+    override operator fun invoke(cid: String, messageLimit: Int, startMessageId: String?): Call2<Channel> {
         validateCid(cid)
         val channelRepo = domainImpl.channel(cid)
         val runnable = suspend {
-            channelRepo.loadNewerMessages(messageLimit)
+            channelRepo.loadNewerMessages(messageLimit, startMessageId)
         }
         return CallImpl2<Channel>(
             runnable,

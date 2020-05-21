@@ -313,10 +313,10 @@ class ChannelControllerImpl(
         _loading.postValue(false)
     }
 
-    fun loadMoreMessagesRequest(limit: Int = 30, direction: Pagination): QueryChannelPaginationRequest {
+    fun loadMoreMessagesRequest(limit: Int = 30, direction: Pagination, startMessageId: String? = null): QueryChannelPaginationRequest {
         val messages = sortedMessages()
         var request = QueryChannelPaginationRequest(limit)
-        if (messages.isNotEmpty()) {
+        if (messages.isNotEmpty() && startMessageId == null) {
             val messageId: String = when (direction) {
                 Pagination.GREATER_THAN_OR_EQUAL, Pagination.GREATER_THAN -> {
                     messages.last().id
@@ -326,6 +326,8 @@ class ChannelControllerImpl(
                 }
             }
             request = request.apply { messageFilterDirection = direction; messageFilterValue = messageId }
+        }else if(startMessageId != null){
+            request = request.apply { messageFilterDirection = direction; messageFilterValue = startMessageId }
         }
 
         return request
@@ -343,13 +345,13 @@ class ChannelControllerImpl(
         return result
     }
 
-    suspend fun loadNewerMessages(limit: Int = 30): Result<Channel> {
+    suspend fun loadNewerMessages(limit: Int = 30, startMessageId: String? = null): Result<Channel> {
         if (_loadingNewerMessages.value == true) {
             logger.logI("Another request to load newer messages is in progress. Ignoring this request.")
             return Result(null, ChatError("Another request to load newer messages is in progress. Ignoring this request."))
         }
         _loadingNewerMessages.postValue(true)
-        val pagination = loadMoreMessagesRequest(limit, Pagination.GREATER_THAN)
+        val pagination = loadMoreMessagesRequest(limit, Pagination.GREATER_THAN, startMessageId)
         val result = runChannelQuery(pagination)
         _loadingNewerMessages.postValue(false)
         return result
