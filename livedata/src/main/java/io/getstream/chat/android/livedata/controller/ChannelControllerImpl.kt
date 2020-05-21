@@ -57,7 +57,7 @@ class ChannelControllerImpl(
     internal var hideMessagesBefore: Date? = null
 
     override fun clearMessages() {
-        _messages.postValue(mutableMapOf())
+        _messages.value  = mutableMapOf()
     }
 
     /** a list of messages sorted by message.createdAt */
